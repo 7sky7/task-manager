@@ -3,42 +3,42 @@
 Laravel で作成した、認証・認可・検索・並び替えを備えたタスク管理アプリです。
 単純なCRUDから一歩進んで、実務でよく使う構成(ユーザー認証・リレーション・認可・自動テスト・CI)を一通り実装しています。
 
-![PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php&logoColor=white)
-![Laravel](https://img.shields.io/badge/Laravel-11%2B-FF2D20?logo=laravel&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-blue)
+!\[PHP](https://img.shields.io/badge/PHP-8.3-777BB4?logo=php\&logoColor=white)
+!\[Laravel](https://img.shields.io/badge/Laravel-11%2B-FF2D20?logo=laravel\&logoColor=white)
+!\[License](https://img.shields.io/badge/license-MIT-blue)
 
 ## デモアカウント
 
 Seederを実行すると、以下のアカウントですぐに動作確認ができます。
 
-| Email | Password |
-|---|---|
-| demo@example.com | password |
+|Email|Password|
+|-|-|
+|demo@example.com|password|
 
 ## 主な機能
 
-- ユーザー認証(会員登録・ログイン・ログアウト)
-- タスクのCRUD(作成・一覧・詳細・更新・削除)
-- タスクはユーザーごとに管理(他人のタスクは見えない・編集できない)
-- カテゴリ機能(タスクとカテゴリの1対多リレーション)
-- 優先度(低 / 中 / 高)・期限日の設定、期限切れの自動ハイライト
-- キーワード検索、状態・カテゴリでの絞り込み、カラムソート、ページネーション
-- フォームリクエストによるバリデーション、日本語エラーメッセージ
-- Policyによる認可(自分のタスク以外は403)
-- Factory / Seederによるデモデータ投入
-- PHPUnitによる自動テスト(認証・CRUD・認可)
-- GitHub Actionsによる CI(push時に自動でテスト実行)
+* ユーザー認証(会員登録・ログイン・ログアウト)
+* タスクのCRUD(作成・一覧・詳細・更新・削除)
+* タスクはユーザーごとに管理(他人のタスクは見えない・編集できない)
+* カテゴリ機能(タスクとカテゴリの1対多リレーション)
+* 優先度(低 / 中 / 高)・期限日の設定、期限切れの自動ハイライト
+* キーワード検索、状態・カテゴリでの絞り込み、カラムソート、ページネーション
+* フォームリクエストによるバリデーション、日本語エラーメッセージ
+* Policyによる認可(自分のタスク以外は403)
+* Factory / Seederによるデモデータ投入
+* PHPUnitによる自動テスト(認証・CRUD・認可)
+* GitHub Actionsによる CI(push時に自動でテスト実行)
 
 ## 技術スタック
 
-| 分類 | 使用技術 |
-|---|---|
-| バックエンド | PHP 8.3 / Laravel 11+ |
-| フロントエンド | Blade / Bootstrap 5 |
-| DB | MySQL(本番想定)/ SQLite(テスト) |
-| テスト | PHPUnit(Feature Test) |
-| CI | GitHub Actions |
-| 認証・認可 | Laravel標準の Auth Facade / Policy |
+|分類|使用技術|
+|-|-|
+|バックエンド|PHP 8.3 / Laravel 11+|
+|フロントエンド|Blade / Bootstrap 5|
+|DB|MySQL(本番想定)/ SQLite(テスト)|
+|テスト|PHPUnit(Feature Test)|
+|CI|GitHub Actions|
+|認証・認可|Laravel標準の Auth Facade / Policy|
 
 ## ER図
 
@@ -62,13 +62,13 @@ erDiagram
 
     TASKS {
         bigint id PK
-        bigint user_id FK
-        bigint category_id FK
+        bigint user\_id FK
+        bigint category\_id FK
         string title
         text description
         string priority
-        date due_date
-        boolean is_done
+        date due\_date
+        boolean is\_done
     }
 ```
 
@@ -76,35 +76,34 @@ erDiagram
 
 1. Laravelプロジェクトを新規作成(まだ無ければ)
 
-   ```bash
+```bash
    composer create-project laravel/laravel task-manager
    cd task-manager
    ```
 
 2. このリポジトリのファイルを、同じパスにコピー(上書き)する
 
-   - `app/`
-   - `database/`
-   - `resources/views/`
-   - `routes/web.php`
-   - `tests/`
-
+   * `app/`
+   * `database/`
+   * `resources/views/`
+   * `routes/web.php`
+   * `tests/`
 3. `.env` を用意してDBを設定し、キーを生成
 
-   ```bash
+```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
 4. マイグレーション + デモデータ投入
 
-   ```bash
+```bash
    php artisan migrate --seed
    ```
 
 5. サーバー起動
 
-   ```bash
+```bash
    php artisan serve
    ```
 
@@ -121,21 +120,21 @@ php artisan test
 
 ## ルーティング一覧
 
-| メソッド | URI | 認証 | 説明 |
-|---|---|---|---|
-| GET | / | - | /tasks へリダイレクト |
-| GET | /login | ゲストのみ | ログイン画面 |
-| POST | /login | ゲストのみ | ログイン処理 |
-| GET | /register | ゲストのみ | 会員登録画面 |
-| POST | /register | ゲストのみ | 会員登録処理 |
-| POST | /logout | 要ログイン | ログアウト |
-| GET | /tasks | 要ログイン | タスク一覧(検索・絞り込み・ソート対応) |
-| GET | /tasks/create | 要ログイン | 作成フォーム |
-| POST | /tasks | 要ログイン | 保存 |
-| GET | /tasks/{task} | 要ログイン・本人のみ | 詳細 |
-| GET | /tasks/{task}/edit | 要ログイン・本人のみ | 編集フォーム |
-| PUT/PATCH | /tasks/{task} | 要ログイン・本人のみ | 更新 |
-| DELETE | /tasks/{task} | 要ログイン・本人のみ | 削除 |
+|メソッド|URI|認証|説明|
+|-|-|-|-|
+|GET|/|-|/tasks へリダイレクト|
+|GET|/login|ゲストのみ|ログイン画面|
+|POST|/login|ゲストのみ|ログイン処理|
+|GET|/register|ゲストのみ|会員登録画面|
+|POST|/register|ゲストのみ|会員登録処理|
+|POST|/logout|要ログイン|ログアウト|
+|GET|/tasks|要ログイン|タスク一覧(検索・絞り込み・ソート対応)|
+|GET|/tasks/create|要ログイン|作成フォーム|
+|POST|/tasks|要ログイン|保存|
+|GET|/tasks/{task}|要ログイン・本人のみ|詳細|
+|GET|/tasks/{task}/edit|要ログイン・本人のみ|編集フォーム|
+|PUT/PATCH|/tasks/{task}|要ログイン・本人のみ|更新|
+|DELETE|/tasks/{task}|要ログイン・本人のみ|削除|
 
 ## ディレクトリ構成(抜粋)
 
@@ -162,21 +161,21 @@ tests/Feature/
 
 ## 実装で意識したポイント(ポートフォリオ用メモ)
 
-- **認可(Authorization)をコントローラに書き散らさず Policy に集約**し、`$this->authorize()` で呼び出す構成にした
-- **バリデーションを FormRequest に分離**し、コントローラの責務をHTTPの流れの制御に絞った
-- **並び替えカラムをホワイトリスト方式で検証**し、任意カラム名を注入されないようにした
-- ページネーションのリンクに検索条件を保持する `withQueryString()` を使い、UXを損なわないようにした
-- Factory / Seeder を用意することで、**テストとデモデータ投入の両方**に同じ定義を再利用できるようにした
-- 認証・CRUD・認可(他人のタスクは403になること)を、それぞれ **Featureテストとして明文化** した
+\- ログイン済みかどうかの確認(入り口のチェック)と、「その1件のデータを操作していい人か」という権限判定を分けて設計した。前者はルートのミドルウェアで行い、後者は `TaskPolicy` というクラスに集約している。TaskControllerは「このタスクの編集を許可していいか」をPolicyに問い合わせるだけで、実際の判定(ログイン中のユーザーIDとタスクの持ち主のIDが一致するか)はPolicyの中で行う。これにより、他人のタスクをURLで直接開こうとしても403エラーになる。
+
+\- 絞り込んだ状態のままページをめくれないと、2ページ目に行くたびに検索条件が消えてしまい、ユーザーは何度も同じ絞り込みをやり直す必要が出てしまう。それを防ぐために `withQueryString()` を使って、ページネーションのリンクにも今の検索条件を引き継ぐようにした。
+
+\- 「他人のタスクは更新・削除できない」という認可の仕組みが本当に機能しているかを、人の手作業ではなく自動テストで担保した。テストの中でわざと2人のユーザー(持ち主と別人)を用意し、別人が持ち主のタスクを操作しようとするリクエストを送って、403エラーになることを検証している。これにより、今後コードを修正した際にPolicyのチェックが壊れても、すぐに気づけるようにしている。
 
 ## 今後の改善案
 
-- Dockerによる開発環境の統一(docker-compose)
-- タスクの担当者アサインなど、複数人での利用を想定した機能拡張
-- Vue/ReactによるSPA化、またはLivewireでのリアルタイム更新
-- メール認証・パスワードリセット機能の追加
-- API化(Sanctumを使ったトークン認証)してモバイルアプリ対応
+* Dockerによる開発環境の統一(docker-compose)
+* タスクの担当者アサインなど、複数人での利用を想定した機能拡張
+* Vue/ReactによるSPA化、またはLivewireでのリアルタイム更新
+* メール認証・パスワードリセット機能の追加
+* API化(Sanctumを使ったトークン認証)してモバイルアプリ対応
 
 ## ライセンス
 
 [MIT License](./LICENSE)
+
